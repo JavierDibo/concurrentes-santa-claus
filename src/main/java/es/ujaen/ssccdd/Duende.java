@@ -13,14 +13,14 @@ public class Duende implements Runnable {
     private final AtomicInteger duendesConProblemas;
 
     /**
-     * Constructor de la clase Duende.
+     * Constructor de la clase Duende
      *
-     * @param id                  Identificador del duende.
-     * @param exm                 Semaforo para exclusion mutua.
-     * @param esperarAyuda        Semaforo para esperar la ayuda de Santa Claus.
-     * @param esperaDuende        Semaforo para esperar a otros duendes que tengan problemas.
-     * @param descansoSanta       Semaforo para avisar a Santa Claus de que todos los duendes tienen problemas.
-     * @param duendesConProblemas Contador de duendes con problemas.
+     * @param id                  Identificador del duende
+     * @param exm                 Semaforo para exclusion mutua
+     * @param esperarAyuda        Semaforo para esperar la ayuda de Santa
+     * @param esperaDuende        Semaforo para esperar a otros duendes que tengan problemas
+     * @param descansoSanta       Semaforo para avisar a Santa de que todos los duendes tienen problemas
+     * @param duendesConProblemas Contador de duendes con problemas
      */
     public Duende(int id, Semaphore exm, Semaphore esperarAyuda, Semaphore esperaDuende, Semaphore descansoSanta, AtomicInteger duendesConProblemas) {
         this.id = id;
@@ -32,8 +32,8 @@ public class Duende implements Runnable {
     }
 
     /**
-     * Implementacion del metodo run de la interfaz Runnable.
-     * El duende hace juguetes y solicita ayuda a Santa Claus cuando tiene problemas.
+     * Implementacion del metodo run de la interfaz Runnable
+     * El duende hace juguetes y solicita ayuda a Santa cuando tiene problemas
      */
     @Override
     public void run() {
@@ -53,37 +53,41 @@ public class Duende implements Runnable {
                 esperarAyuda.acquire();
                 resolverAyuda();
 
-                // Ya se ha completado la ayuda de Santa
+                // Santa ya ha ayudado a to.do el mundo
                 exm.acquire();
                 duendesConProblemas.decrementAndGet();
-                if (duendesConProblemas.get() == 0) {
+                if (duendesConProblemas.get() == SIN_PROBLEMAS) {
                     esperaDuende.release();
                 }
                 exm.release();
             }
         } catch (InterruptedException e) {
-            System.out.println("(Duende " + id + ") ha sido interrumpido");
+            System.out.println("(Hilo DUENDE: " + id + ") ha sido interrumpido");
         }
     }
 
     /**
-     * Metodo que simula la accion de hacer un juguete.
-     *
-     * @throws InterruptedException si el hilo es interrumpido mientras esta durmiendo.
+     * Metodo que simula la accion de hacer un juguete
      */
     private void hacerJuguete() throws InterruptedException {
-        System.out.println("(Duende " + id + ") esta haciendo juguetes");
-        TimeUnit.SECONDS.sleep(ThreadLocalRandom.current().nextInt(1, 5));
+        System.out.println("(Hilo DUENDE: " + id + ") esta haciendo juguetes");
+        TimeUnit.SECONDS.sleep(ThreadLocalRandom.current().nextInt(TIEMPO_MIN_FABRICAR_JUGUETE, TIEMPO_MAX_FABRICAR_JUGUETE));
     }
 
     /**
-     * Metodo que simula la accion de recibir la ayuda de Santa Claus.
-     *
-     * @throws InterruptedException si el hilo es interrumpido mientras esta durmiendo.
+     * Metodo que simula la accion de recibir la ayuda de Santa
      */
     private void resolverAyuda() throws InterruptedException {
-        System.out.println("(Duende " + id + ") esta recibiendo ayuda de Santa Claus");
-        TimeUnit.SECONDS.sleep(2);
+        System.out.println("(Hilo DUENDE: " + id + ") esta recibiendo ayuda de Santa");
+        TimeUnit.SECONDS.sleep(TIEMPO_RECIBIR_AYUDA);
     }
+
+    // Segundos
+    private static final int TIEMPO_MIN_FABRICAR_JUGUETE = 1;
+    private static final int TIEMPO_MAX_FABRICAR_JUGUETE = 5;
+    private static final int TIEMPO_RECIBIR_AYUDA = 2;
+    private static final int SIN_PROBLEMAS = 0;
+
+
 }
 

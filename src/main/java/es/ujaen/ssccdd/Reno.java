@@ -12,13 +12,13 @@ public class Reno implements Runnable {
     private final AtomicInteger regresoVacaciones;
 
     /**
-     * Constructor de la clase Reno.
+     * Constructor de la clase Reno
      *
-     * @param id                El identificador del reno.
-     * @param exm               Semaforo para exclusion mutua entre los renos.
-     * @param repartoRegalos    Semaforo para controlar el reparto de regalos entre Santa Claus y los renos.
-     * @param descansoSanta     Semaforo para controlar el descanso de Santa Claus.
-     * @param regresoVacaciones Contador atomico para llevar la cuenta de los renos que han regresado de vacaciones.
+     * @param id                El identificador del reno
+     * @param exm               Semaforo para exclusion mutua entre los renos
+     * @param repartoRegalos    Semaforo para controlar el reparto de regalos entre Santa y los renos
+     * @param descansoSanta     Semaforo para controlar el descanso de Santa
+     * @param regresoVacaciones Contador atomico para llevar la cuenta de los renos que han regresado de vacaciones
      */
     public Reno(int id, Semaphore exm, Semaphore repartoRegalos, Semaphore descansoSanta, AtomicInteger regresoVacaciones) {
         this.id = id;
@@ -29,7 +29,7 @@ public class Reno implements Runnable {
     }
 
     /**
-     * Metodo run que implementa la tarea del reno.
+     * Metodo run que implementa la vida del reno
      */
     @Override
     public void run() {
@@ -48,27 +48,28 @@ public class Reno implements Runnable {
                 repartirRegalos();
             }
         } catch (InterruptedException e) {
-            System.out.println("(Reno " + id + ") ha sido interrumpido");
+            System.out.println("(Hilo RENO: " + id + ") ha sido interrumpido");
         }
     }
 
     /**
-     * Metodo que simula las vacaciones del reno.
-     *
-     * @throws InterruptedException Si se produce una interrupcion durante la espera.
+     * Metodo que simula las vacaciones del reno
      */
     private void vacaciones() throws InterruptedException {
-        System.out.println("(Reno " + id + ") esta de vacaciones");
-        TimeUnit.SECONDS.sleep(ThreadLocalRandom.current().nextInt(1, 5));
+        System.out.println("(Hilo RENO: " + id + ") esta de vacaciones");
+        TimeUnit.SECONDS.sleep(ThreadLocalRandom.current().nextInt(TIEMPO_MIN_VACACIONES, TIEMPO_MAX_VACACIONES));
     }
 
     /**
-     * Metodo que simula la entrega de regalos del reno junto a Santa Claus.
-     *
-     * @throws InterruptedException Si se produce una interrupcion durante la espera.
+     * Metodo que simula la entrega de regalos del reno junto a Santa
      */
     private void repartirRegalos() throws InterruptedException {
-        System.out.println("(Reno " + id + ") esta repartiendo regalos con Santa Claus");
-        TimeUnit.SECONDS.sleep(2);
+        System.out.println("(Hilo RENO:" + id + ") esta repartiendo regalos con Santa");
+        TimeUnit.SECONDS.sleep(TIEMPO_REPARTIR_REGALOS);
     }
+
+    // Segundos
+    private static final int TIEMPO_REPARTIR_REGALOS = 2;
+    private static final int TIEMPO_MIN_VACACIONES = 1;
+    private static final int TIEMPO_MAX_VACACIONES = 5;
 }

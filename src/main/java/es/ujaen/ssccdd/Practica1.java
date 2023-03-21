@@ -4,18 +4,19 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author Javier Francisco Dibo Gomez
+ * Resolucion de la primera practica basandose en el analisis proporcionado por el profesor
+ *
+ * @author Javier Francisco Dibo Gómez
  */
 public class Practica1 {
-    public static final int NUM_RENOS = 9;
-    public static final int NUM_DUENDES = 3;
-    public static final int TIEMPO_PRUEBA = 30;
 
     public static void main(String[] args) {
 
         System.out.println("(Hilo PRINCIPAL) ha comenzado");
 
-        ExecutorService executor = Executors.newFixedThreadPool(NUM_RENOS + NUM_DUENDES + 1);
+        // Inicializacion de variables
+
+        ExecutorService executor = Executors.newFixedThreadPool(NUM_RENOS + NUM_DUENDES + SANTA);
 
         Semaphore exm = new Semaphore(1);
         Semaphore repartoRegalos = new Semaphore(0);
@@ -25,6 +26,8 @@ public class Practica1 {
 
         AtomicInteger regresoVacaciones = new AtomicInteger(0);
         AtomicInteger duendesConProblemas = new AtomicInteger(0);
+
+        // Ejecucion de los hilos
 
         Runnable santa = new Santa(descansoSanta, exm, repartoRegalos, esperarAyuda, regresoVacaciones, duendesConProblemas);
         executor.execute(santa);
@@ -39,14 +42,23 @@ public class Practica1 {
             executor.execute(duende);
         }
 
+        // Tiempo para la finalizacion de la prueba
+
         try {
-            TimeUnit.SECONDS.sleep(TIEMPO_PRUEBA); // Tiempo para la finalizacion de la prueba
+            TimeUnit.SECONDS.sleep(TIEMPO_PRUEBA);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        // Interrumpir los hilos
 
         executor.shutdownNow();
 
         System.out.println("(Hilo PRINCIPAL) ha finalizado");
     }
+
+    public static final int NUM_RENOS = 9;
+    public static final int NUM_DUENDES = 3;
+    public static final int SANTA = 1;
+    public static final int TIEMPO_PRUEBA = 30;
 }
